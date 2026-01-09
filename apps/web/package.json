@@ -6,10 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@semafy/core": "workspace:*",
+    "@vitejs/plugin-react": "^5.1.2",
     "clsx": "^2.1.1",
     "ethers": "catalog:",
     "lucide-react": "^0.562.0",
@@ -21,13 +26,21 @@
     "wagmi": "^3.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/ui": "catalog:",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "happy-dom": "catalog:",
     "tailwindcss": "^4",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

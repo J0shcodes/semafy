@@ -10,7 +10,11 @@
     "dev": "tsup --watch",
     "lint": "echo 'Linting...'",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:unit": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +28,8 @@
     "@types/node": "catalog:",
     "tsup": "^8.5.1",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@vitest/ui": "catalog:",
+    "happy-dom": "catalog:"
   }
 }
