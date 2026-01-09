@@ -1,20 +1,24 @@
 {
   "name": "semafy",
   "version": "1.0.0",
-  "description": "",
+  "description": "Smart Contract Humanizer - Understand before you sign",
   "main": "index.js",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "type-check": "turbo run type-check"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "type-check": "turbo run type-check",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
+    "@types/node": "catalog:",
+    "prettier": "^3.7.4",
     "turbo": "^2.7.3"
   }
 }
