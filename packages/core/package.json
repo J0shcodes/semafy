@@ -22,7 +22,7 @@
   "dependencies": {
     "axios": "^1.13.2",
     "ethers": "catalog:",
-    "zod": "^4.3.5"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

@@ -10,6 +10,7 @@ catalog:
   "@types/node": ^25.0.3
   ethers: ^6.16.0
   typescript: ^5.9.3
+  zod: ^4.3.5
 
   # Testing Dependencies
   vitest: "^4.0.16"
