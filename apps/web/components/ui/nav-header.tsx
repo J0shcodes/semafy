@@ -27,7 +27,8 @@ export function NavHeader({ showAnalyzeButton = true }: NavHeaderProps) {
             Docs
           </Link>
           <Link
-            href="#"
+            href="https://github.com/J0shcodes/semafy"
+            target="_blank"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             GitHub
