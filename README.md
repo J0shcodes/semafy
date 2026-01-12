@@ -4,7 +4,7 @@ A human-readable trust layer for smart contracts
 
 ## Overview
 
-SemaFy converts smart contracts into clear, human-readable explanations. It helps users understand what a contract does, who controls it, and what risks they take — before interacting on-chain.
+SemaFy converts smart contracts into clear, human-readable explanations. It helps users understand what a contract does, who controls it, and what risks they take, before interacting on-chain.
 
 ## The Problem
 
