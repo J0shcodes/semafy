@@ -1,4 +1,4 @@
-import { Info } from "lucide-react"
+import { Info } from 'lucide-react';
 
 export function DisclaimerSection() {
   return (
@@ -9,15 +9,18 @@ export function DisclaimerSection() {
             <Info className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
-            <h3 className="text-sm font-medium text-foreground mb-2">Important information</h3>
+            <h3 className="text-sm font-medium text-foreground mb-2">
+              Important information
+            </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              SemaFy provides informational analysis only. This is not a security audit, not financial advice, and
-              should not be used as the sole basis for any transaction decision. Always do your own research and consult
-              professionals when needed.
+              SemaFy provides informational analysis only. This is not a
+              security audit, not financial advice, and should not be used as
+              the sole basis for any transaction decision. Always do your own
+              research and consult professionals when needed.
             </p>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

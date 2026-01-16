@@ -6,6 +6,8 @@ import { HumanExplanation } from '@/components/analyze/human-explanation';
 import { RiskSurface } from '@/components/analyze/risk-surface';
 import { Info } from 'lucide-react';
 
+// import {runHeuristics} from "@semafy/core"
+
 const mockContractData = {
   address: '0x1234567890abcdef1234567890abcdef12345678',
   network: 'Ethereum',

@@ -36,7 +36,7 @@ SemaFy combines:
 
 ❌ **Not financial advice** — Make informed decisions based on multiple sources
 
-*This honesty builds trust.*
+_This honesty builds trust._
 
 ## Open Source Philosophy
 

@@ -1,16 +1,16 @@
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
 interface LogoProps {
-  className?: string
-  size?: "sm" | "md" | "lg"
+  className?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
-export function Logo({ className, size = "md" }: LogoProps) {
+export function Logo({ className, size = 'md' }: LogoProps) {
   const sizes = {
-    sm: "h-6",
-    md: "h-8",
-    lg: "h-10",
-  }
+    sm: 'h-6',
+    md: 'h-8',
+    lg: 'h-10',
+  };
 
   return (
     <div className={cn('flex items-center gap-2', className)}>

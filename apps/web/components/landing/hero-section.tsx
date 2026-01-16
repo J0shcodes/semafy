@@ -1,13 +1,13 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ArrowRight, Search } from "lucide-react"
-import Link from "next/link"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ArrowRight, Search } from 'lucide-react';
+import Link from 'next/link';
 
 export function HeroSection() {
-  const [contractAddress, setContractAddress] = useState("")
+  const [contractAddress, setContractAddress] = useState('');
 
   return (
     <section className="w-full py-24 md:py-32">
@@ -16,8 +16,9 @@ export function HeroSection() {
           Understand smart contracts before you sign.
         </h1>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
-          SemaFy converts complex smart contract logic into clear, human-readable explanations — so you know exactly
-          what permissions you&apos;re granting.
+          SemaFy converts complex smart contract logic into clear,
+          human-readable explanations — so you know exactly what permissions
+          you&apos;re granting.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
@@ -44,5 +45,5 @@ export function HeroSection() {
         </p>
       </div>
     </section>
-  )
+  );
 }
