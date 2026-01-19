@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { Footer } from '@/components/ui/footer';
 import { NavHeader } from '@/components/ui/nav-header';
@@ -48,9 +48,9 @@ const mockContractData = {
 };
 
 const AnalyzePage = () => {
-  const {validAddress} = useAddressStore()
+  const { validAddress } = useAddressStore();
 
-  console.log(validAddress)
+  console.log(validAddress);
 
   return (
     <div className="min-h-screen flex flex-col">

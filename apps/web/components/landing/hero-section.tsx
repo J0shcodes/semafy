@@ -87,7 +87,7 @@ export function HeroSection() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             ) : (
-              <span className='cursor-not-allowed'>
+              <span className="cursor-not-allowed">
                 Analyze Contract
                 <ArrowRight className="ml-2 h-4 w-4" />
               </span>
