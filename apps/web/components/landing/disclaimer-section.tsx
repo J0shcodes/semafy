@@ -5,7 +5,7 @@ export function DisclaimerSection() {
     <section className="w-full py-16 bg-secondary/50">
       <div className="max-w-3xl mx-auto px-6">
         <div className="flex gap-4 items-start">
-          <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center shrink-0">
             <Info className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>

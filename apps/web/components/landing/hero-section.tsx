@@ -1,13 +1,49 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Search } from 'lucide-react';
 import Link from 'next/link';
 
+import { evmAddressSchema } from '@/schema/address-schema';
+import { useAddressStore } from '@/store/address-store';
+
 export function HeroSection() {
-  const [contractAddress, setContractAddress] = useState('');
+  const [inputValue, setInputValue] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+
+  const { setValidAddress } = useAddressStore();
+
+  const performValidation = (address: string) => {
+    if (!address) {
+      setError(null);
+      return;
+    }
+
+    // if (address.length > 0 && address.length < 42) {
+    //   setError(null);
+    //   return;
+    // }
+
+    const validation = evmAddressSchema.safeParse(address);
+
+    if (!validation.success) {
+      console.log(validation.error.issues[0].message);
+      setError(validation.error.issues[0].message);
+    } else {
+      setError(null);
+      setValidAddress(address);
+    }
+  };
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      performValidation(inputValue);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [inputValue]);
 
   return (
     <section className="w-full py-24 md:py-32">
@@ -22,21 +58,40 @@ export function HeroSection() {
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Paste contract address (0x...)"
-              value={contractAddress}
-              onChange={(e) => setContractAddress(e.target.value)}
-              className="pl-10 h-12 bg-card border-border text-foreground placeholder:text-muted-foreground"
-            />
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Paste contract address (0x...)"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onBlur={() => performValidation(inputValue)}
+                className="pl-10 h-12 bg-card border-border text-foreground placeholder:text-muted-foreground"
+              />
+            </div>
+            {error && (
+              <p className="text-xs text-severity-high mt-0.5">{error}</p>
+            )}
           </div>
-          <Button asChild size="lg" className="h-12 px-6">
-            <Link href="/analyze">
-              Analyze Contract
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+
+          <Button
+            asChild
+            size="lg"
+            className="h-12 px-6"
+            disabled={!!error || !inputValue}
+          >
+            {!error && inputValue ? (
+              <Link href="/analyze">
+                Analyze Contract
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            ) : (
+              <span className='cursor-not-allowed'>
+                Analyze Contract
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </span>
+            )}
           </Button>
         </div>
 

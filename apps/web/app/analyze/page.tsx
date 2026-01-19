@@ -1,3 +1,5 @@
+"use client"
+
 import { Footer } from '@/components/ui/footer';
 import { NavHeader } from '@/components/ui/nav-header';
 import { ContractInfo } from '@/components/analyze/contract-info';
@@ -7,6 +9,7 @@ import { RiskSurface } from '@/components/analyze/risk-surface';
 import { Info } from 'lucide-react';
 
 // import {runHeuristics} from "@semafy/core"
+import { useAddressStore } from '@/store/address-store';
 
 const mockContractData = {
   address: '0x1234567890abcdef1234567890abcdef12345678',
@@ -45,6 +48,10 @@ const mockContractData = {
 };
 
 const AnalyzePage = () => {
+  const {validAddress} = useAddressStore()
+
+  console.log(validAddress)
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavHeader />
@@ -63,7 +70,7 @@ const AnalyzePage = () => {
           {/* Contract Info Bar */}
           <div className="mb-8">
             <ContractInfo
-              address={mockContractData.address}
+              address={validAddress}
               network={mockContractData.network}
             />
           </div>

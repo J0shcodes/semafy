@@ -66,7 +66,8 @@
     "vaul": "^1.1.2",
     "viem": "^2.44.0",
     "wagmi": "^3.2.0",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
