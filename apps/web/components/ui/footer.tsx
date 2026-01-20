@@ -58,7 +58,7 @@ export function Footer() {
         </div>
         <div className="mt-12 pt-6 border-t border-border">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} HumanLayer. Open source under MIT
+            © {new Date().getFullYear()} HumanLayer. Open source under MLP 2.0
             license.
           </p>
         </div>

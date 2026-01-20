@@ -53,7 +53,7 @@ export function HeroSection() {
         </h1>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
           SemaFy converts complex smart contract logic into clear,
-          human-readable explanations — so you know exactly what permissions
+          human-readable explanations; so you know exactly what permissions
           you&apos;re granting.
         </p>
 
