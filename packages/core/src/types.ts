@@ -19,10 +19,19 @@ export type AbiItem = {
   anonymous?: boolean;
 };
 
+export type ExplorerData = {
+  abi: AbiItem[] | null;
+  sourceCode: string | null;
+  contractName?: string | null;
+};
+
 export type ContractData = {
-  abi: AbiItem[];
-  sourceCode?: string;
-  byteCode?: string;
+  address: string;
+  implementationAddress: string | null;
+  abi: AbiItem[] | null;
+  sourceCode?: string | null;
+  bytecode?: string;
+  explorerData: ExplorerData;
 };
 
 export type RiskHeuristic = {
@@ -33,3 +42,27 @@ export type RiskHeuristic = {
   evidence: string[];
   explanationSeed: string;
 };
+
+export interface ExplorerConfig {
+  apiUrl: string;
+  apiKey: string;
+}
+
+export interface ContractResult {
+  SourceCode: string;
+  ABI: string;
+  ContractName: string;
+  CompilerVersion: string;
+  CompilerType: string;
+  OptimizationUsed: string;
+  Runs: string;
+  ConstructorArguments: string;
+  EVMVersion: string;
+  Library: string;
+  ContractFileName: string;
+  LicenseType: string;
+  Proxy: string;
+  Implementation: string;
+  SwarmSource: string;
+  SimilarMatch: string;
+}

@@ -8,6 +8,7 @@ import { HumanExplanation } from '@/components/analyze/human-explanation';
 import { RiskSurface } from '@/components/analyze/risk-surface';
 import { Info } from 'lucide-react';
 
+import { ContractFetcher } from '../../../../packages/core/src/fetcher/ContractFetcher';
 // import {runHeuristics} from "@semafy/core"
 import { useAddressStore } from '@/store/address-store';
 
@@ -49,6 +50,8 @@ const mockContractData = {
 
 const AnalyzePage = () => {
   const { validAddress } = useAddressStore();
+
+  fetcher = new ContractFetcher();
 
   console.log(validAddress);
 
