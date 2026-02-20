@@ -310,6 +310,9 @@ importers:
       lru-cache:
         specifier: ^11.2.4
         version: 11.2.4
+      viem:
+        specifier: ^2.44.0
+        version: 2.44.0(typescript@5.9.3)(zod@4.3.5)
       zod:
         specifier: 'catalog:'
         version: 4.3.5

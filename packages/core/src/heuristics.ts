@@ -27,7 +27,7 @@ function detectOwnerControl(data: ContractData): RiskHeuristic | null {
   };
 }
 
-function detectMiniting(abi: AbiItem[]): RiskHeuristic | null {
+function detectMinting(abi: AbiItem[]): RiskHeuristic | null {
   const mintFunctions = abi.filter(
     (fn) =>
       fn.type === 'function' && fn.name?.toLocaleLowerCase().includes('mint'),
@@ -120,9 +120,9 @@ function detectTransferRestrictions(data: ContractData): RiskHeuristic | null {
 export function runHeuristics(data: ContractData): RiskHeuristic[] {
   return [
     detectOwnerControl(data),
-    detectMiniting(data.abi),
+    detectMinting(data.abi),
     detectPrivilegedWithdrawal(data.abi),
     detectTransferRestrictions(data),
     detectUpgradeableContract(data),
-  ].filter(boolean) as RiskHeuristic[];
+  ].filter((r): r is RiskHeuristic => r !== null);
 }

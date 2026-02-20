@@ -23,6 +23,7 @@
     "axios": "^1.13.2",
     "ethers": "catalog:",
     "lru-cache": "^11.2.4",
+    "viem": "^2.44.0",
     "zod": "catalog:"
   },
   "devDependencies": {

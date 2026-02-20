@@ -46,6 +46,7 @@ export type RiskHeuristic = {
 export interface ExplorerConfig {
   apiUrl: string;
   apiKey: string;
+  providerKey?: string
 }
 
 export interface ContractResult {
@@ -65,4 +66,9 @@ export interface ContractResult {
   Implementation: string;
   SwarmSource: string;
   SimilarMatch: string;
+}
+
+export interface ChainConfig {
+  name: string
+  rpcBase: string
 }

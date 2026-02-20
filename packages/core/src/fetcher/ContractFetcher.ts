@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { LRUCache } from 'lru-cache';
 
 import { parseSourceCode } from '../parser/parseSourceCode';
+import { SUPPORTED_CHAINS } from './config';
 
 // EIP-1967 Implementation Slot: keccak256('eip1967.proxy.implementation') - 1
 const IMPLEMENTATION_SLOT =
@@ -19,6 +20,7 @@ import {
 export class ContractFetcher {
   private provider: ethers.JsonRpcProvider;
   private explorer: ExplorerConfig;
+  private chainId: number;
   private cache = new LRUCache<string, any>({
     max: 5000,
     ttl: 3.154e12, // Set TTL to ~100 years in milliseconds
@@ -29,9 +31,18 @@ export class ContractFetcher {
   private lastCallTime = 0;
   private minInterval = 200; // milliseconds
 
-  constructor(rpcUrl: string, explorer: ExplorerConfig) {
+  constructor(rpcUrl: string, explorer: ExplorerConfig, chainId: number) {
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
     this.explorer = explorer;
+    this.chainId = chainId
+  }
+
+  /**
+   * Builds a chain-scoped cache key to prevent collisions across chains.
+   * e.g. "1:0xAbC..." for Ethereum, "8453:0xAbC..." for Base
+   */
+  private cacheKey(address: string): string {
+    return `${this.chainId}:${address}`
   }
 
   /**
@@ -39,8 +50,9 @@ export class ContractFetcher {
    */
   async fetch(address: string, resolveProxy = true): Promise<any> {
     const checksummed = ethers.getAddress(address);
+    const key = this.cacheKey(checksummed)
 
-    if (this.cache.has(checksummed)) return this.cache.get(checksummed)!;
+    if (this.cache.has(key)) return this.cache.get(key)!;
 
     const bytecode = await this.provider.getCode(checksummed);
     if (bytecode === '0x') {
@@ -107,7 +119,6 @@ export class ContractFetcher {
    * Fetches and parses Source/ABI (Handling Nested JSON)
    */
   private async fetchFromExplorer(address: string): Promise<ExplorerData> {
-    // try {
     const url = `${this.explorer.apiUrl}?module=contract&action=getsourcecode&address=${address}&apikey=${this.explorer.apiKey}`;
     const response = await axios.get(url);
 
@@ -120,24 +131,10 @@ export class ContractFetcher {
       sourceCode = parseSourceCode(sourceCode);
     }
 
-    // if (sourceCode.startsWith('{{')) {
-    //   try {
-    //     const jsonContent = JSON.parse(
-    //       sourceCode.substring(1, sourceCode.length - 1),
-    //     );
-    //     sourceCode = jsonContent.sources;
-    //   } catch (error) {
-    //     console.error('Failed to parse nested source JSON');
-    //   }
-    // }
-
     return {
       abi: JSON.parse(result.ABI),
       sourceCode: sourceCode,
       contractName: result.ContractName,
     };
-    // } catch (error) {
-    //   console.error('Explorer API failed, falling back to basic data');
-    // }
   }
 }
