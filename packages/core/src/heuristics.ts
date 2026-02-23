@@ -10,7 +10,7 @@ function detectOwnerControl(data: ContractData): RiskHeuristic | null {
   ];
 
   const found = ownerPatterns.some((pattern) =>
-    data.sourceCode?.includes(pattern),
+    data.explorerData.sourceCode?.includes(pattern),
   );
 
   if (!found) return null;
@@ -21,7 +21,9 @@ function detectOwnerControl(data: ContractData): RiskHeuristic | null {
     severity: 'medium',
     description:
       'The contract includes functions restricted to a privileged owner or admin',
-    evidence: ownerPatterns.filter((p) => data.sourceCode?.includes(p)),
+    evidence: ownerPatterns.filter((p) =>
+      data.explorerData.sourceCode?.includes(p),
+    ),
     explanationSeed:
       'The contract owner has special permissions that regular users do not.',
   };
@@ -40,7 +42,9 @@ function detectMinting(abi: AbiItem[]): RiskHeuristic | null {
     title: 'Owner Can Create New Tokens',
     severity: 'high',
     description: 'A privileged role can create new tokens.',
-    evidence: mintFunctions.map((fn) => fn.name),
+    evidence: mintFunctions
+      .map((fn) => fn.name)
+      .filter((name): name is string => name !== undefined),
     explanationSeed:
       'The owner can create new tokens at any time, which may reduce the value of existing tokens.',
   };
@@ -48,7 +52,13 @@ function detectMinting(abi: AbiItem[]): RiskHeuristic | null {
 
 function detectPrivilegedWithdrawal(abi: AbiItem[]): RiskHeuristic | null {
   const withdrawFns = abi.filter((fn) =>
-    ['withdraw', 'emergencyWithdraw'].includes(fn.name ?? ''),
+    [
+      'withdraw',
+      'emergencyWithdraw',
+      'rescueTokens',
+      'recoverERC20',
+      'drainTo',
+    ].includes(fn.name ?? ''),
   );
 
   if (withdrawFns.length === 0) return null;
@@ -58,22 +68,37 @@ function detectPrivilegedWithdrawal(abi: AbiItem[]): RiskHeuristic | null {
     title: 'Privileged Fund Withdrawal',
     severity: 'high',
     description: 'Funds can be withdrawn by a privileged address.',
-    evidence: withdrawFns.map((fn) => fn.name),
+    evidence: withdrawFns
+      .map((fn) => fn.name)
+      .filter((name): name is string => name !== undefined),
     explanationSeed:
       'Funds held by this contract are not fully locked and can be withdrawn by a specific address.',
   };
 }
 
 function detectUpgradeableContract(data: ContractData): RiskHeuristic | null {
+  if (data.implementationAddress) {
+    return {
+      id: 'UPGRADEABLE_CONTRACT',
+      title: 'Contract Can Be Upgraded',
+      severity: "medium",
+      description: 'The contract logic can be changed after deployment.',
+      evidence: ['EIP-1967 proxy implementation slot detected'],
+      explanationSeed: 'This contract can be upgraded, meaning its behavior may change in the future.'
+    }
+  }
+
   const upgradePatterns = [
-    'delegatecall',
+    'ProxyAdmin',
+    'UpgradeTo(',
+    'UpgradeToAndCall',
     'Upgradeable',
     'UUPSUpgradeable',
     'TransparentUpgradeableProxy',
   ];
 
   const found = upgradePatterns.some((pattern) =>
-    data.sourceCode?.includes(pattern),
+    data.explorerData.sourceCode?.includes(pattern),
   );
 
   if (!found) return null;
@@ -83,7 +108,9 @@ function detectUpgradeableContract(data: ContractData): RiskHeuristic | null {
     title: 'Contract Can Be Upgraded',
     severity: 'medium',
     description: 'The contract logic can be changed after deployment.',
-    evidence: upgradePatterns.filter((p) => data.sourceCode?.includes(p)),
+    evidence: upgradePatterns.filter((p) =>
+      data.explorerData.sourceCode?.includes(p),
+    ),
     explanationSeed:
       'This contract can be upgraded, meaning its behavior may change in the future.',
   };
@@ -99,7 +126,7 @@ function detectTransferRestrictions(data: ContractData): RiskHeuristic | null {
   ];
 
   const found = restrictionPatterns.some((pattern) =>
-    data.sourceCode?.toLowerCase().includes(pattern),
+    data.explorerData.sourceCode?.toLowerCase().includes(pattern),
   );
 
   if (!found) return null;
@@ -110,7 +137,7 @@ function detectTransferRestrictions(data: ContractData): RiskHeuristic | null {
     severity: 'medium',
     description: 'Transfers can be paused or restricted by a privileged role.',
     evidence: restrictionPatterns.filter((p) =>
-      data.sourceCode?.toLowerCase().includes(p),
+      data.explorerData.sourceCode?.toLowerCase().includes(p),
     ),
     explanationSeed:
       'The contract owner can pause or restrict transfers, which may affect asset usability.',
@@ -120,8 +147,8 @@ function detectTransferRestrictions(data: ContractData): RiskHeuristic | null {
 export function runHeuristics(data: ContractData): RiskHeuristic[] {
   return [
     detectOwnerControl(data),
-    detectMinting(data.abi),
-    detectPrivilegedWithdrawal(data.abi),
+    detectMinting(data.explorerData.abi!),
+    detectPrivilegedWithdrawal(data.explorerData.abi!),
     detectTransferRestrictions(data),
     detectUpgradeableContract(data),
   ].filter((r): r is RiskHeuristic => r !== null);

@@ -27,9 +27,10 @@ export type ExplorerData = {
 
 export type ContractData = {
   address: string;
+  chainId: number;
   implementationAddress: string | null;
-  abi: AbiItem[] | null;
-  sourceCode?: string | null;
+  // abi: AbiItem[] | null;
+  // sourceCode?: string | null;
   bytecode?: string;
   explorerData: ExplorerData;
 };

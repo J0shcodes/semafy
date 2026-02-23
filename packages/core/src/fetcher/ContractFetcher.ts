@@ -15,6 +15,7 @@ import {
   ExplorerConfig,
   ContractResult,
   ExplorerData,
+  ContractData,
 } from '../types';
 
 export class ContractFetcher {
@@ -48,7 +49,7 @@ export class ContractFetcher {
   /**
    * Main entry point: Fetches data with proxy resolution and caching
    */
-  async fetch(address: string, resolveProxy = true): Promise<any> {
+  async fetch(address: string, resolveProxy = true): Promise<ContractData> {
     const checksummed = ethers.getAddress(address);
     const key = this.cacheKey(checksummed)
 
@@ -71,14 +72,15 @@ export class ContractFetcher {
     }
 
     await this.throttle();
-    const explorerData = await this.fetchFromExplorer(address);
+    const explorerData = await this.fetchFromExplorer(address, this.chainId);
 
-    const result = {
+    const result: ContractData = {
       address: checksummed,
+      chainId: this.chainId,
       implementationAddress:
         targetAddress !== checksummed ? targetAddress : null,
       bytecode,
-      ...explorerData,
+      explorerData: explorerData,
     };
 
     this.cache.set(checksummed, result);
@@ -118,8 +120,8 @@ export class ContractFetcher {
   /**
    * Fetches and parses Source/ABI (Handling Nested JSON)
    */
-  private async fetchFromExplorer(address: string): Promise<ExplorerData> {
-    const url = `${this.explorer.apiUrl}?module=contract&action=getsourcecode&address=${address}&apikey=${this.explorer.apiKey}`;
+  private async fetchFromExplorer(address: string, chainId: number): Promise<ExplorerData> {
+    const url = `${this.explorer.apiUrl}?module=contract&action=getsourcecode&address=${address}&apikey=${this.explorer.apiKey}&chainid=${chainId}`;
     const response = await axios.get(url);
 
     if (response.data.status !== '1') return { abi: null, sourceCode: null };
@@ -127,9 +129,9 @@ export class ContractFetcher {
     const result: ContractResult = response.data.result[0];
     let sourceCode = result.SourceCode;
 
-    if (sourceCode.startsWith('{{')) {
-      sourceCode = parseSourceCode(sourceCode);
-    }
+    // if (sourceCode.startsWith('{{')) {
+    //   sourceCode = parseSourceCode(sourceCode);
+    // }
 
     return {
       abi: JSON.parse(result.ABI),

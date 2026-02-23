@@ -27,6 +27,8 @@ pnpm-debug.log*
 # local env files
 .env*.local
 .env
+apps/api/.env
+packages/core/.env
 
 # turbo
 .turbo
