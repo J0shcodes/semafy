@@ -16,7 +16,7 @@ const steps = [
     icon: FileText,
     title: 'Get a clear explanation',
     description:
-      'Receive a human-readable breakdown of what the contract does and what permissions it requires — before you interact.',
+      'Receive a human-readable breakdown of what the contract does and what permissions it requires, before you interact.',
   },
 ];
 

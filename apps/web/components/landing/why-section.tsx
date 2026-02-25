@@ -17,7 +17,7 @@ const features = [
     icon: BookOpen,
     title: 'Built for clarity',
     description:
-      'We present information neutrally — helping you understand, not telling you what to do.',
+      'We present information neutrally, by helping you understand, not telling you what to do.',
   },
 ];
 

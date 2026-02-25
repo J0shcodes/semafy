@@ -30,9 +30,17 @@ const AnalyzePage = () => {
             </p>
           </div>
 
-          {isLoading && <div>Loading...</div>}
+          {isLoading && (
+            <div className="h-50 flex w-full items-center justify-center text-center">
+              <div className="border-transparent border-t-muted-foreground h-10 w-10 animate-spin rounded-full border-[5px] border-solid" />
+            </div>
+          )}
 
-          {isError && <div>Failed to fetch contract analysis</div>}
+          {isError && (
+            <div className="text-sm text-severity-high flex justify-center items-center h-50">
+              Failed to fetch contract analysis
+            </div>
+          )}
 
           {contractAnalysis && (
             <ContractAnalysis contractAnalysis={contractAnalysis} />
