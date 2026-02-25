@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Search } from 'lucide-react';
 import Link from 'next/link';
+import { ContractFetcherFactory } from '@semafy/core';
 
 import { evmAddressSchema } from '@/schema/address-schema';
 import { useAddressStore } from '@/store/address-store';
@@ -13,18 +14,15 @@ export function HeroSection() {
   const [inputValue, setInputValue] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const { setValidAddress } = useAddressStore();
+  const { setValidAddress, setChain, chain } = useAddressStore();
+
+  const chains = ContractFetcherFactory.getSupportedChains();
 
   const performValidation = (address: string) => {
     if (!address) {
       setError(null);
       return;
     }
-
-    // if (address.length > 0 && address.length < 42) {
-    //   setError(null);
-    //   return;
-    // }
 
     const validation = evmAddressSchema.safeParse(address);
 
@@ -58,21 +56,41 @@ export function HeroSection() {
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Paste contract address (0x...)"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onBlur={() => performValidation(inputValue)}
-                className="pl-10 h-12 bg-card border-border text-foreground placeholder:text-muted-foreground"
-              />
+          <div className="flex-1 flex flex-col gap-y-1">
+            <div>
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Paste contract address (0x...)"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onBlur={() => performValidation(inputValue)}
+                  className="pl-10 h-12 bg-card border-border text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+              {error && (
+                <p className="text-xs text-severity-high mt-0.5">{error}</p>
+              )}
             </div>
-            {error && (
-              <p className="text-xs text-severity-high mt-0.5">{error}</p>
-            )}
+            <div className="">
+              <select
+                className="text-sm outline-none text-foreground py-2 w-full"
+                value={chain}
+                onChange={(e) => setChain(e.target.value)}
+                // defaultValue={chains[0].slug}
+              >
+                {chains.map((chain) => (
+                  <option
+                    key={chain.chainId}
+                    value={chain.slug}
+                    // selected={chain.slug === 'ethereum' ? true : false}
+                  >
+                    {chain.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <Button

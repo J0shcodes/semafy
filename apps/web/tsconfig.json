@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@semafy/core": ["../../packages/core/src/index.ts"]
     }
   },
   "include": [

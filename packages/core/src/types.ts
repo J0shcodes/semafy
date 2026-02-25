@@ -47,7 +47,7 @@ export type RiskHeuristic = {
 export interface ExplorerConfig {
   apiUrl: string;
   apiKey: string;
-  providerKey?: string
+  providerKey?: string;
 }
 
 export interface ContractResult {
@@ -70,6 +70,18 @@ export interface ContractResult {
 }
 
 export interface ChainConfig {
-  name: string
-  rpcBase: string
+  name: string;
+  rpcBase: string;
+}
+
+export interface HeuristicsAnalysis {
+  contractAddress: string;
+  chainId: number;
+  contractName: string | null;
+  implementationAddress: string | null;
+  risks: RiskHeuristic[];
+  isOwnerControlled: boolean;
+  isUpgradeable: boolean;
+  explanation: null;
+  explanationSource: null;
 }
