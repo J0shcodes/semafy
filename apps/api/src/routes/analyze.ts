@@ -1,10 +1,13 @@
 import { Router, Response, Request, NextFunction } from 'express';
-import { ContractFetcherFactory } from '@semafy/core';
-import { runHeuristics } from '@semafy/core';
-import { ContractData } from '@semafy/core';
+import {
+  ContractFetcherFactory,
+  runHeuristics,
+  ContractData,
+} from '@semafy/core';
 import z from 'zod';
 import { isAddress } from 'viem';
 import { AppError } from '../types/errors';
+import { generateExplanation } from 'src/services/aiExplainer';
 
 export const analyzerRouter = Router();
 
@@ -19,6 +22,15 @@ interface AnalyzeBody {
   address: string;
   chain: string;
 }
+
+const CHAIN_NAMES: Record<number, string> = {
+  1: 'Ethereum',
+  8453: 'Base',
+  137: 'Polygon',
+  42161: 'Arbitrum One',
+  10: 'Optimism',
+  56: 'BNB Smart Chain',
+};
 
 analyzerRouter.post(
   '/analyze',
@@ -43,7 +55,7 @@ analyzerRouter.post(
       let fetcher;
       try {
         fetcher = ContractFetcherFactory.getBySlug(chain);
-      } catch (error) {
+      } catch {
         throw new AppError(
           `Unsupported chain: ${chain}`,
           'UNSUPPORTED_CHAIN',
@@ -51,7 +63,7 @@ analyzerRouter.post(
         );
       }
 
-      let contractData: ContractData;
+      let contractData;
       try {
         contractData = await fetcher.fetch(address);
       } catch (error: any) {
@@ -77,7 +89,27 @@ analyzerRouter.post(
         );
       }
 
-      const risks = runHeuristics(contractData);
+      const heuristicRisks = runHeuristics(contractData);
+
+      const chainName = CHAIN_NAMES[contractData.chainId] ?? chain;
+
+      const aiTimeout = new Promise<null>((resolve) =>
+        setTimeout(() => {
+          console.warn(
+            '[analyze] AI explanation timed out — returning without it.',
+          );
+          resolve(null);
+        }, 8000),
+      );
+
+      const aiResult = await Promise.race([
+        generateExplanation(contractData.explorerData.contractName ?? null, chainName, heuristicRisks),
+        aiTimeout
+      ])
+
+      const risks = aiResult ? aiResult.risks : heuristicRisks.map((r) => ({...r, plainEnglish: null}))
+      const summary = aiResult ? aiResult.summary : null
+      const explanationSource = aiResult ? aiResult.source : null
 
       return res.status(200).json({
         contractAddress: contractData.address,
@@ -85,10 +117,12 @@ analyzerRouter.post(
         contractName: contractData.explorerData.contractName ?? null,
         implementationAddress: contractData.implementationAddress,
         risks,
-        isOwnerControlled: risks.some((r) => r.id === 'OWNER_CONTROL'),
-        isUpgradeable: risks.some((r) => r.id === 'UPGRADEABLE_CONTRACT'),
-        explanation: null,
-        explanationSource: null,
+        isOwnerControlled: heuristicRisks.some((r) => r.id === 'OWNER_CONTROL'),
+        isUpgradeable: heuristicRisks.some(
+          (r) => r.id === 'UPGRADEABLE_CONTRACT',
+        ),
+        explanation: summary,
+        explanationSource,
       });
     } catch (error) {
       next(error);
