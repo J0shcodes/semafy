@@ -8,6 +8,7 @@ import z from 'zod';
 import { isAddress } from 'viem';
 import { AppError } from '../types/errors';
 import { generateExplanation } from 'src/services/aiExplainer';
+import { logAnalysis } from 'src/services/logger';
 
 export const analyzerRouter = Router();
 
@@ -41,7 +42,6 @@ analyzerRouter.post(
   ) => {
     try {
       const parsed = analyzeSchema.safeParse(req.body);
-
       if (!parsed.success) {
         throw new AppError(
           parsed.error.issues[0].message,
@@ -75,7 +75,7 @@ analyzerRouter.post(
           );
         }
         throw new AppError(
-          'Failed to fetch contract data',
+          'Failed to fetch contract data. The RPC or explorer may be unavailable.',
           'UPSTREAM_FAILURE',
           503,
         );
@@ -83,13 +83,33 @@ analyzerRouter.post(
 
       if (!contractData.explorerData.sourceCode) {
         throw new AppError(
-          'Contract source code is not verified on this explorer',
+          'Contract source code is not verified on this explorer.',
           'CONTRACT_NOT_VERIFIED',
           422,
         );
       }
 
       const heuristicRisks = runHeuristics(contractData);
+
+      // ── 6. Fire-and-forget logging ───────────
+      // Runs after heuristics, before the AI call.
+      // A logging failure never blocks or degrades the response.
+      // The .catch() is a safety net on top of logger's internal
+      // error handling — belt and braces.
+
+      logAnalysis({
+        contractAddress: contractData.address,
+        chainId: contractData.chainId,
+        contractName: contractData.explorerData.contractName ?? null,
+        implementationAddress: contractData.implementationAddress,
+        risks: heuristicRisks,
+        isOwnerControlled: heuristicRisks.some((r) => r.id === 'OWNER_CONTROL'),
+        isUpgradeable: heuristicRisks.some(
+          (r) => r.id === 'UPGRADEABLE_CONTRACT',
+        ),
+      }).catch((err) =>
+        console.log('[analyze] Unexpected logging error:', err),
+      );
 
       const chainName = CHAIN_NAMES[contractData.chainId] ?? chain;
 
@@ -103,13 +123,19 @@ analyzerRouter.post(
       );
 
       const aiResult = await Promise.race([
-        generateExplanation(contractData.explorerData.contractName ?? null, chainName, heuristicRisks),
-        aiTimeout
-      ])
+        generateExplanation(
+          contractData.explorerData.contractName! ?? null,
+          chainName,
+          heuristicRisks,
+        ),
+        aiTimeout,
+      ]);
 
-      const risks = aiResult ? aiResult.risks : heuristicRisks.map((r) => ({...r, plainEnglish: null}))
-      const summary = aiResult ? aiResult.summary : null
-      const explanationSource = aiResult ? aiResult.source : null
+      const risks = aiResult
+        ? aiResult.risks
+        : heuristicRisks.map((r) => ({ ...r, plainEnglish: null }));
+      const summary = aiResult ? aiResult.summary : null;
+      const explanationSource = aiResult ? aiResult.source : null;
 
       return res.status(200).json({
         contractAddress: contractData.address,
