@@ -80,11 +80,12 @@ function detectUpgradeableContract(data: ContractData): RiskHeuristic | null {
     return {
       id: 'UPGRADEABLE_CONTRACT',
       title: 'Contract Can Be Upgraded',
-      severity: "medium",
+      severity: 'medium',
       description: 'The contract logic can be changed after deployment.',
       evidence: ['EIP-1967 proxy implementation slot detected'],
-      explanationSeed: 'This contract can be upgraded, meaning its behavior may change in the future.'
-    }
+      explanationSeed:
+        'This contract can be upgraded, meaning its behavior may change in the future.',
+    };
   }
 
   const upgradePatterns = [
@@ -124,8 +125,10 @@ function detectTransferRestrictions(data: ContractData): RiskHeuristic | null {
     'whenNotPaused',
   ];
 
+  // const sourceCodeLower = data.explorerData.sourceCode?.toLowerCase();
+
   const found = restrictionPatterns.some((pattern) =>
-    data.explorerData.sourceCode?.toLowerCase().includes(pattern),
+    data.explorerData.sourceCode?.toLowerCase().includes(pattern.toLowerCase()),
   );
 
   if (!found) return null;
@@ -136,7 +139,7 @@ function detectTransferRestrictions(data: ContractData): RiskHeuristic | null {
     severity: 'medium',
     description: 'Transfers can be paused or restricted by a privileged role.',
     evidence: restrictionPatterns.filter((p) =>
-      data.explorerData.sourceCode?.toLowerCase().includes(p),
+      data.explorerData.sourceCode?.toLowerCase().includes(p.toLowerCase()),
     ),
     explanationSeed:
       'The contract owner can pause or restrict transfers, which may affect asset usability.',

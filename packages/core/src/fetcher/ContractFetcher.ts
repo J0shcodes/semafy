@@ -50,7 +50,7 @@ export class ContractFetcher {
    * Main entry point: Fetches data with proxy resolution and caching
    */
   async fetch(address: string, resolveProxy = true): Promise<ContractData> {
-    const checksummed = ethers.getAddress(address);
+    const checksummed = ethers.getAddress(address.toLowerCase());
     const key = this.cacheKey(checksummed)
 
     if (this.cache.has(key)) return this.cache.get(key)!;
@@ -83,7 +83,7 @@ export class ContractFetcher {
       explorerData: explorerData,
     };
 
-    this.cache.set(checksummed, result);
+    this.cache.set(key, result);
 
     return result;
   }

@@ -16,9 +16,13 @@ export interface ExplainedRisk extends RiskHeuristic {
   plainEnglish: string | null;
 }
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+function createClient() {
+  return new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+}
+
+const client = createClient()
 
 function buildUserMessage(
   contractName: string,

@@ -20,16 +20,18 @@ export function RiskSurface({ risks }: RiskSurfaceProps) {
         </div>
         <h3 className="text-lg font-medium text-foreground">Risk surface</h3>
       </div>
-      <div className="space-y-3">
-        {risks.map((risk, index) => (
-          <RiskCard
-            key={index}
-            title={risk.title}
-            severity={risk.severity}
-            description={risk.description}
-          />
-        ))}
-      </div>
+      {risks && (
+        <div className="space-y-3">
+          {risks.map((risk, index) => (
+            <RiskCard
+              key={index}
+              title={risk.title}
+              severity={risk.severity}
+              description={risk.description}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -57,12 +57,12 @@ export function ContractAnalysis({
       </div>
 
       {/* Language Toggle */}
-      <div className="mb-6 flex items-center gap-3">
+      {/* <div className="mb-6 flex items-center gap-3">
         <span className="text-sm text-muted-foreground">
           Explanation language:
         </span>
         <LanguageToggle />
-      </div>
+      </div> */}
 
       {/* Two Column Layout */}
       <div className="grid lg:grid-cols-2 gap-8">

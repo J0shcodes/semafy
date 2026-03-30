@@ -4,9 +4,26 @@ import { ethers } from 'ethers';
 import { ContractFetcher } from './ContractFetcher';
 import { parseSourceCode } from '../parser/parseSourceCode';
 
+import { JsonRpcProvider } from 'ethers';
+
+vi.mock('ethers', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('ethers')>();
+  const mockProviderConstructor = vi.fn();
+  return {
+    ...actual, // Keep utilities like getAddress, ZeroHash, etc.
+    JsonRpcProvider: mockProviderConstructor,
+    ethers: {
+      ...actual.ethers,
+      JsonRpcProvider: mockProviderConstructor,
+    },
+  };
+});
+
 // Mock dependencies
 vi.mock('axios');
-vi.mock('../parser');
+vi.mock('../parser/parseSourceCode', () => ({
+  parseSourceCode: vi.fn(),
+}));
 
 const mockedAxios = axios as unknown as {
   get: ReturnType<typeof vi.fn>;
@@ -52,13 +69,14 @@ describe('ContractFetcher Integration', () => {
       getStorage: vi.fn(),
     };
 
-    vi.spyOn(ethers, 'JsonRpcProvider').mockImplementation(
-      () => mockProvider as any,
-    );
+    vi.mocked(JsonRpcProvider).mockImplementation(function () {
+      return mockProvider;
+    } as any);
 
     fetcher = new ContractFetcher(
       'https://eth-mainnet.example.com',
       EXPLORER_CONFIG,
+      1,
     );
   });
 
@@ -101,11 +119,14 @@ describe('ContractFetcher Integration', () => {
 
       expect(result).toEqual({
         address: ethers.getAddress(TEST_ADDRESS),
+        chainId: 1,
         implementationAddress: null,
         bytecode: MOCK_BYTECODE,
-        abi: MOCK_ABI,
-        sourceCode: 'contract Token {}',
-        contractName: 'Token',
+        explorerData: {
+          abi: MOCK_ABI,
+          sourceCode: 'contract Token {}',
+          contractName: 'Token',
+        },
       });
 
       expect(mockProvider.getCode).toHaveBeenCalledWith(
@@ -152,7 +173,7 @@ describe('ContractFetcher Integration', () => {
       const result = await fetcher.fetch(TEST_ADDRESS);
 
       expect(mockedParseSourceCode).toHaveBeenCalledWith(nestedSourceCode);
-      expect(result.sourceCode).toEqual(parsedSource);
+      expect(result.explorerData.sourceCode).toEqual(parsedSource);
     });
 
     it('should throw error for EOA (no bytecode)', async () => {
@@ -175,8 +196,8 @@ describe('ContractFetcher Integration', () => {
 
       const result = await fetcher.fetch(TEST_ADDRESS);
 
-      expect(result.abi).toBeNull();
-      expect(result.sourceCode).toBeNull();
+      expect(result.explorerData.abi).toBeNull();
+      expect(result.explorerData.sourceCode).toBeNull();
       expect(result.bytecode).toBe(MOCK_BYTECODE);
     });
 

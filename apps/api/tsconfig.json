@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "paths": {
-      "@semafy/core": ["../../packages/core/src/index.ts"]
+      "@semafy/core": ["../../packages/core/src/index.ts"],
+      "src/*": ["./src/*"]
     }
   },
   "include": ["src/**/*", "../../packages/core/src/**/*"]

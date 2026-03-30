@@ -3,7 +3,7 @@ import app from './app';
 import { isStorachaConfigured } from './services/storacha';
 import { isIndexServiceConfigured } from './services/indexService';
 
-const REQUIRED_VARS = ['ETHERSCAN_RPC_URL', 'ETHERSCAN_API_KEY'];
+const REQUIRED_VARS = ['ETHERSCAN_API_URL', 'ETHERSCAN_API_KEY'];
 const OPTIONAL_VARS = ['ANTHROPIC_API_KEY'];
 
 REQUIRED_VARS.forEach((key) => {
