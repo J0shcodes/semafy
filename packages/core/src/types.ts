@@ -85,3 +85,5 @@ export interface HeuristicsAnalysis {
   explanation: null;
   explanationSource: null;
 }
+
+export type ParsedSourceCode = Record<string, { content: string }>

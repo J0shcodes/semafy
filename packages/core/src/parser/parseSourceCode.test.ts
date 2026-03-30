@@ -39,7 +39,7 @@ describe('parseSourceCode', () => {
       };
       const input = `{${JSON.stringify(nestedJson)}}`;
 
-      const result = parseSourceCode(input);
+      const result = parseSourceCode(input) as Record<string, any>;
 
       expect(result).toEqual(nestedJson.sources);
       expect(Object.keys(result)).toHaveLength(3);
@@ -162,7 +162,7 @@ describe('parseSourceCode', () => {
       };
       const input = `{${JSON.stringify(nestedJson)}}`;
 
-      const result = parseSourceCode(input);
+      const result = parseSourceCode(input) as Record<string, any>;
 
       expect(result).toEqual(nestedJson.sources);
       expect(result['contracts/utils/Contract.sol']).toBeDefined();

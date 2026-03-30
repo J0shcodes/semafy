@@ -1,4 +1,6 @@
-export function parseSourceCode(sourceCode: string): string {
+import { ParsedSourceCode } from "../types";
+
+export function parseSourceCode(sourceCode: string) : ParsedSourceCode | string | null {
   let parsedSource = '';
 
   try {
