@@ -2,15 +2,14 @@ import { Router, Response, Request, NextFunction } from 'express';
 import {
   ContractFetcherFactory,
   runHeuristics,
-  ContractData,
 } from '@semafy/core';
 import z from 'zod';
 import { isAddress } from 'viem';
 import { AppError } from '../types/errors';
-import { generateExplanation } from 'src/services/aiExplainer';
-import { logAnalysis } from 'src/services/logger';
+import { generateExplanation } from '../services/aiExplainer';
+import { logAnalysis } from '../services/logger';
 
-export const analyzerRouter = Router();
+export const analyzerRouter: Router = Router();
 
 const analyzeSchema = z.object({
   address: z.string().refine((val) => isAddress(val), {
@@ -91,12 +90,6 @@ analyzerRouter.post(
 
       const heuristicRisks = runHeuristics(contractData);
 
-      // ── 6. Fire-and-forget logging ───────────
-      // Runs after heuristics, before the AI call.
-      // A logging failure never blocks or degrades the response.
-      // The .catch() is a safety net on top of logger's internal
-      // error handling — belt and braces.
-
       logAnalysis({
         contractAddress: contractData.address,
         chainId: contractData.chainId,
@@ -113,23 +106,11 @@ analyzerRouter.post(
 
       const chainName = CHAIN_NAMES[contractData.chainId] ?? chain;
 
-      const aiTimeout = new Promise<null>((resolve) =>
-        setTimeout(() => {
-          console.warn(
-            '[analyze] AI explanation timed out — returning without it.',
-          );
-          resolve(null);
-        }, 8000),
+      const aiResult = await generateExplanation(
+        contractData.explorerData.contractName || 'Unknown',
+        chainName,
+        heuristicRisks,
       );
-
-      const aiResult = await Promise.race([
-        generateExplanation(
-          contractData.explorerData.contractName! ?? null,
-          chainName,
-          heuristicRisks,
-        ),
-        aiTimeout,
-      ]);
 
       const risks = aiResult
         ? aiResult.risks

@@ -44,7 +44,7 @@ export function NavHeader({ showAnalyzeButton = true }: NavHeaderProps) {
           </div>
           {showAnalyzeButton && (
             <Button asChild size="sm">
-              <Link href="/analyze">Analyze Contract</Link>
+              <Link href="/">Analyze Contract</Link>
             </Button>
           )}
           <MenuIcon

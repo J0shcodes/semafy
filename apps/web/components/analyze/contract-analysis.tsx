@@ -67,18 +67,20 @@ export function ContractAnalysis({
       {/* Two Column Layout */}
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Left Column - Human Explanation */}
-        <div className="p-6 rounded-xl border border-border bg-card">
-          <HumanExplanation
-            whatItDoes={mockContractData.whatItDoes}
-            ownerAddress={mockContractData.ownerAddress}
-            isOwnerControlled={contractAnalysis.isOwnerControlled}
-            isUpgradeable={contractAnalysis.isUpgradeable}
-          />
-        </div>
+        {contractAnalysis.explanation && (
+          <div className="p-6 rounded-xl border border-border bg-card">
+            <HumanExplanation
+              whatItDoes={contractAnalysis.explanation}
+              // ownerAddress={mockContractData.ownerAddress}
+              isOwnerControlled={contractAnalysis.isOwnerControlled}
+              isUpgradeable={contractAnalysis.isUpgradeable}
+            />
+          </div>
+        )}
 
         {/* Right Column - Risk Surface */}
         <>
-          {contractAnalysis.risks.length === 0 ? (
+          {contractAnalysis.risks && contractAnalysis.risks.length === 0 ? (
             <div>
               {/* <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center">

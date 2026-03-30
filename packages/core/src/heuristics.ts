@@ -1,4 +1,3 @@
-import { boolean } from 'zod';
 import { AbiItem, ContractData, RiskHeuristic } from './types';
 
 function detectOwnerControl(data: ContractData): RiskHeuristic | null {

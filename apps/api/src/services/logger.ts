@@ -48,7 +48,11 @@ export async function logAnalysis(
       analysedAt: new Date().toISOString(),
     };
 
+    console.log("Logging...")
+
     const { cid, url } = await uploadJSON(log);
+
+    console.log("[logger] Analysis log uploaded to Storacha:", { ...log, cid, url });
 
     const completedLog = { ...log, cid, url };
 

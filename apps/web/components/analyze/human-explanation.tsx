@@ -2,18 +2,18 @@ import { User, Settings } from 'lucide-react';
 
 interface HumanExplanationProps {
   whatItDoes: string;
-  ownerAddress: string;
+  // ownerAddress: string;
   isOwnerControlled: boolean;
   isUpgradeable: boolean;
 }
 
 export function HumanExplanation({
   whatItDoes,
-  ownerAddress,
+  // ownerAddress,
   isOwnerControlled,
   isUpgradeable,
 }: HumanExplanationProps) {
-  const shortenedOwner = `${ownerAddress.slice(0, 6)}...${ownerAddress.slice(-4)}`;
+  // const shortenedOwner = `${ownerAddress.slice(0, 6)}...${ownerAddress.slice(-4)}`;
 
   return (
     <div className="space-y-6">
@@ -41,12 +41,12 @@ export function HumanExplanation({
           </h3>
         </div>
         <div className="pl-10 space-y-3">
-          <div className="flex items-center justify-between py-2 px-3 rounded-md bg-secondary/50">
+          {/* <div className="flex items-center justify-between py-2 px-3 rounded-md bg-secondary/50">
             <span className="text-sm text-muted-foreground">Owner address</span>
             <code className="text-sm font-mono text-foreground">
               {shortenedOwner}
             </code>
-          </div>
+          </div> */}
           <div className="flex items-center justify-between py-2 px-3 rounded-md bg-secondary/50">
             <span className="text-sm text-muted-foreground">
               Owner-controlled
