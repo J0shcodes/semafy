@@ -1,9 +1,9 @@
-import express from "express"
+import express, {Express} from "express"
 import cors from "cors"
 import { errorHandler } from "./middleware/errorHandler"
 import { analyzerRouter } from "./routes/analyze"
 
-const app = express()
+const app: Express = express()
 
 app.use(cors({
     origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000"
