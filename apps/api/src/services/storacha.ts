@@ -31,11 +31,11 @@ async function getClient(): Promise<any> {
     // Dynamic imports — required because w3up-client v17 is ESM-only
 
     const { create } = await import('@web3-storage/w3up-client');
-    const { ed25519 } = await import('@ucanto/principal');
+    const { Signer } = await import('@ucanto/principal/ed25519');
     const { parse: parseProof } =
       await import('@web3-storage/w3up-client/proof');
 
-    const principal = ed25519.Signer.parse(agentKey);
+    const principal = Signer.parse(agentKey);
     const client = await create({ principal });
 
     // w3up-client/proof's parse() handles the Base64 decoding automatically
