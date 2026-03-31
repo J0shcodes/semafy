@@ -11,7 +11,7 @@ export function useContractAnalysis(address: string, chain: string) {
     enabled: !!address && !!chain,
     queryFn: async (): Promise<HeuristicsAnalysis | undefined> => {
       try {
-        const response = await fetch('http://localhost:3001/api/analyze', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analyze`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
