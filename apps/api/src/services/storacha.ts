@@ -29,22 +29,29 @@ async function getClient(): Promise<any> {
     }
 
     // Dynamic imports — required because w3up-client v17 is ESM-only
+
     const { create } = await import('@web3-storage/w3up-client');
-    const { parse: parseSigner } = await import(
-      '@web3-storage/w3up-client/principal/ed25519'
-    );
-    const { parse: parseProof } = await import(
-      '@web3-storage/w3up-client/proof'
-    );
+    const { parse: parseSigner } = await import('@ucanto/principal/ed25519');
+    const { parse: parseProof } =
+      await import('@web3-storage/w3up-client/proof');
 
     const principal = parseSigner(agentKey);
     const client = await create({ principal });
 
-    const parsedProof = await parseProof(proof);
-    const space = await client.addSpace(parsedProof);
-    await client.setCurrentSpace(space.did());
+    // w3up-client/proof's parse() handles the Base64 decoding automatically
+    try {
+      const proofResult = await parseProof(proof);
+      const space = await client.addSpace(proofResult);
+      await client.setCurrentSpace(space.did());
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
 
-    console.log('[storacha] Client initialised — space:', space.did());
+      throw new Error(
+        `[storacha] Failed to parse proof or add space: ${errorMessage}`,
+      );
+    }
+
+    console.log('[storacha] Client initialised — space:', spaceDid);
     return client;
   })();
 

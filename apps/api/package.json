@@ -17,6 +17,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
     "@semafy/core": "workspace:*",
+    "@ucanto/client": "^9.0.2",
+    "@ucanto/core": "^10.4.6",
     "@ucanto/principal": "^9.0.3",
     "@upstash/redis": "^1.36.3",
     "@web3-storage/w3up-client": "^17.3.0",
@@ -24,10 +26,10 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "tsx": "^4.21.0",
     "uuid": "^13.0.0",
     "viem": "^2.44.0",
-    "zod": "catalog:",
-    "tsx": "^4.21.0"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
